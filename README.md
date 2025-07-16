@@ -1,6 +1,5 @@
 # STAR Challenge Backend
 
-[![Node.js CI](https://github.com/fekikarim/star_backend/actions/workflows/node.js.yml/badge.svg)](https://github.com/fekikarim/star_backend/actions/workflows/node.js.yml)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
@@ -122,8 +121,10 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 ## 👏 Acknowledgments
 
-- Built with ❤️ by [Karim Feki](https://github.com/fekikarim)
-- Special thanks to all contributors
+- Built with ❤️ by [Karim Feki](https://github.com/fekikarim) and [Nesrine Derouiche](https://github.com/nesrine77)
+- Contact: 
+  - Karim Feki: [GitHub](https://github.com/fekikarim) | [Email](mailto:feki.karim28@gmail.com) | [LinkedIn](https://www.linkedin.com/in/karimfeki/)
+  - Nesrine Derouiche: [GitHub](https://github.com/nesrine77) | [Email](mailto:nesrine.derouiche15@gmail.com) | [LinkedIn](https://www.linkedin.com/in/nesrine-derouiche/)
 
 ---
 
