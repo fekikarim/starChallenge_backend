@@ -27,8 +27,8 @@ A robust backend system for STAR Challenge, designed to manage and track corpora
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/fekikarim/star_backend.git
-   cd star_backend
+   git clone https://github.com/fekikarim/starChallenge_backend.git
+   cd starChallenge_backend
    ```
 
 2. Install dependencies:
