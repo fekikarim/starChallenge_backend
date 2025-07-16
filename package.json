@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json.schemastore.org/package",
+  "name": "starchallenge_backend",
+  "version": "1.0.0",
+  "description": "A robust backend system for STAR Challenge, designed to manage and track corporate performance challenges. This Node.js application provides secure APIs for handling users, challenges, performance criteria, participants, winners, rewards, and progress tracking. It enables real-time data updates, analytics, and flexible CRUD operations to support efficient challenge management within corporate environments.",
+  "keywords": [
+    "performance",
+    "challenge",
+    "corporate",
+    "rewards",
+    "backend",
+    "Node.js",
+    "express",
+    "REST",
+    "API",
+    "tracking",
+    "management",
+    "analytics"
+  ],
+  "homepage": "https://github.com/fekikarim/star_backend#readme",
+  "bugs": {
+    "url": "https://github.com/fekikarim/star_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fekikarim/star_backend.git"
+  },
+  "license": "ISC",
+  "author": "Karim Feki <feki.karim28@gmail.com> (https://github.com/fekikarim)",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests specified\"",
+    "init-db": "node database/init-db.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite3": "^5.1.7"
+  }
+}

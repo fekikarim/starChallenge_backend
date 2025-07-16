@@ -1,0 +1,2139 @@
+{
+    "info": {
+        "_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+        "name": "STAR Challenge API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Authentification",
+            "item": [
+                {
+                    "name": "Login Utilisateur",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"test@example.com\",\n    \"motDePasse\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs",
+                                "login"
+                            ]
+                        },
+                        "description": "Connecte un utilisateur et récupère un token JWT."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "",
+                                    "pm.test(\"Login successful and token received\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Connexion réussie\");",
+                                    "    pm.expect(jsonData.token).to.be.a('string');",
+                                    "    pm.environment.set(\"jwt_token\", jsonData.token);",
+                                    "    pm.environment.set(\"userId\", jsonData.utilisateur.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Utilisateurs",
+            "item": [
+                {
+                    "name": "Créer Utilisateur",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"user_test_1\",\n    \"nom\": \"Utilisateur Test\",\n    \"email\": \"user_test_1@example.com\",\n    \"motDePasse\": \"password123\",\n    \"role\": \"participant\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs"
+                            ]
+                        },
+                        "description": "Crée un nouvel utilisateur (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"User created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Utilisateur créé avec succès\");",
+                                    "    pm.environment.set(\"userId\", jsonData.utilisateur.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Utilisateurs",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les utilisateurs (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Utilisateur par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs/{{userId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs",
+                                "{{userId}}"
+                            ]
+                        },
+                        "description": "Récupère un utilisateur spécifique par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Utilisateur",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nom\": \"Utilisateur Mis à Jour\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs/{{userId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs",
+                                "{{userId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un utilisateur (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"User updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Utilisateur mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Utilisateur",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/utilisateurs/{{userId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "utilisateurs",
+                                "{{userId}}"
+                            ]
+                        },
+                        "description": "Supprime un utilisateur par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"User deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Utilisateur supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Challenges",
+            "item": [
+                {
+                    "name": "Créer Challenge",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"challenge_test_1\",\n    \"nom\": \"Challenge Test\",\n    \"dateDebut\": \"2024-01-01T00:00:00Z\",\n    \"dateFin\": \"2024-12-31T23:59:59Z\",\n    \"statut\": \"en cours\",\n    \"createurId\": \"{{userId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/challenges",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges"
+                            ]
+                        },
+                        "description": "Crée un nouveau challenge (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Challenge created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Challenge créé avec succès\");",
+                                    "    pm.environment.set(\"challengeId\", jsonData.challenge.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Challenges",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/challenges",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les challenges."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Challenge par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/challenges/{{challengeId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges",
+                                "{{challengeId}}"
+                            ]
+                        },
+                        "description": "Récupère un challenge spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Challenge",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"statut\": \"terminé\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/challenges/{{challengeId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges",
+                                "{{challengeId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un challenge (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Challenge updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Challenge mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Challenge",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/challenges/{{challengeId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges",
+                                "{{challengeId}}"
+                            ]
+                        },
+                        "description": "Supprime un challenge par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Challenge deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Challenge supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Classement Challenge",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/challenges/{{challengeId}}/classement",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges",
+                                "{{challengeId}}",
+                                "classement"
+                            ]
+                        },
+                        "description": "Récupère le classement des participants pour un challenge donné."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Gagnants Challenge",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/challenges/{{challengeId}}/gagnants",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "challenges",
+                                "{{challengeId}}",
+                                "gagnants"
+                            ]
+                        },
+                        "description": "Détermine et récupère les gagnants d'un challenge."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Critères",
+            "item": [
+                {
+                    "name": "Créer Critère",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"critere_test_1\",\n    \"nom\": \"Critère Test\",\n    \"poids\": 1.0,\n    \"challengeId\": \"{{challengeId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/criteres",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "criteres"
+                            ]
+                        },
+                        "description": "Crée un nouveau critère (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Critere created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Critère créé avec succès\");",
+                                    "    pm.environment.set(\"critereId\", jsonData.critere.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Critères",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/criteres",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "criteres"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les critères."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Critère par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/criteres/{{critereId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "criteres",
+                                "{{critereId}}"
+                            ]
+                        },
+                        "description": "Récupère un critère spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Critère",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nom\": \"Critère Mis à Jour\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/criteres/{{critereId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "criteres",
+                                "{{critereId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un critère (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Critere updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Critère mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Critère",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/criteres/{{critereId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "criteres",
+                                "{{critereId}}"
+                            ]
+                        },
+                        "description": "Supprime un critère par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Critere deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Critère supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Participants",
+            "item": [
+                {
+                    "name": "Créer Participant",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"participant_test_1\",\n    \"utilisateurId\": \"{{userId}}\",\n    \"challengeId\": \"{{challengeId}}\",\n    \"scoreTotal\": 0.0\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/participants",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "participants"
+                            ]
+                        },
+                        "description": "Crée un nouveau participant (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Participant created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Participant créé avec succès\");",
+                                    "    pm.environment.set(\"participantId\", jsonData.participant.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Participants",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/participants",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "participants"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les participants."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Participant par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/participants/{{participantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "participants",
+                                "{{participantId}}"
+                            ]
+                        },
+                        "description": "Récupère un participant spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Participant",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"scoreTotal\": 100.0\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/participants/{{participantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "participants",
+                                "{{participantId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un participant (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Participant updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Participant mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Participant",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/participants/{{participantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "participants",
+                                "{{participantId}}"
+                            ]
+                        },
+                        "description": "Supprime un participant par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Participant deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Participant supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Gagnants",
+            "item": [
+                {
+                    "name": "Créer Gagnant",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"gagnant_test_1\",\n    \"utilisateurId\": \"{{userId}}\",\n    \"challengeId\": \"{{challengeId}}\",\n    \"classement\": 1\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/gagnants",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gagnants"
+                            ]
+                        },
+                        "description": "Crée un nouveau gagnant (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Gagnant created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Gagnant créé avec succès\");",
+                                    "    pm.environment.set(\"gagnantId\", jsonData.gagnant.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Gagnants",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/gagnants",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gagnants"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les gagnants."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Gagnant par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/gagnants/{{gagnantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gagnants",
+                                "{{gagnantId}}"
+                            ]
+                        },
+                        "description": "Récupère un gagnant spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Gagnant",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"classement\": 2\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/gagnants/{{gagnantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gagnants",
+                                "{{gagnantId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un gagnant (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Gagnant updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Gagnant mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Gagnant",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/gagnants/{{gagnantId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "gagnants",
+                                "{{gagnantId}}"
+                            ]
+                        },
+                        "description": "Supprime un gagnant par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Gagnant deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Gagnant supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Performances",
+            "item": [
+                {
+                    "name": "Créer Performance",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"performance_test_1\",\n    \"participantId\": \"{{participantId}}\",\n    \"valeur\": 100.5,\n    \"rang\": 1,\n    \"details\": \"{\\\"critereId\\\": \\\"{{critereId}}\\\"}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/performances",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "performances"
+                            ]
+                        },
+                        "description": "Crée une nouvelle performance (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Performance created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Performance créée avec succès\");",
+                                    "    pm.environment.set(\"performanceId\", jsonData.performance.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir toutes les Performances",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/performances",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "performances"
+                            ]
+                        },
+                        "description": "Récupère la liste de toutes les performances."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Performance par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/performances/{{performanceId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "performances",
+                                "{{performanceId}}"
+                            ]
+                        },
+                        "description": "Récupère une performance spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Performance",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"valeur\": 120.0\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/performances/{{performanceId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "performances",
+                                "{{performanceId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'une performance (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Performance updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Performance mise à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Performance",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/performances/{{performanceId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "performances",
+                                "{{performanceId}}"
+                            ]
+                        },
+                        "description": "Supprime une performance par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Performance deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Performance supprimée avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Étoiles",
+            "item": [
+                {
+                    "name": "Créer Étoile",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"etoile_test_1\",\n    \"total\": 5,\n    \"dateAttribution\": \"2024-01-15T10:00:00Z\",\n    \"raison\": \"Test Étoile\",\n    \"utilisateurId\": \"{{userId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/etoiles",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "etoiles"
+                            ]
+                        },
+                        "description": "Crée une nouvelle étoile (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Etoile created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Etoile créée avec succès\");",
+                                    "    pm.environment.set(\"etoileId\", jsonData.etoile.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir toutes les Étoiles",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/etoiles",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "etoiles"
+                            ]
+                        },
+                        "description": "Récupère la liste de toutes les étoiles."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Étoile par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/etoiles/{{etoileId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "etoiles",
+                                "{{etoileId}}"
+                            ]
+                        },
+                        "description": "Récupère une étoile spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Étoile",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"total\": 6\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/etoiles/{{etoileId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "etoiles",
+                                "{{etoileId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'une étoile (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Etoile updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Etoile mise à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Étoile",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/etoiles/{{etoileId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "etoiles",
+                                "{{etoileId}}"
+                            ]
+                        },
+                        "description": "Supprime une étoile par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Etoile deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Etoile supprimée avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Paliers",
+            "item": [
+                {
+                    "name": "Créer Palier",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"palier_test_1\",\n    \"nom\": \"Palier Test\",\n    \"etoilesMin\": 10,\n    \"description\": \"Description du palier test\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/paliers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "paliers"
+                            ]
+                        },
+                        "description": "Crée un nouveau palier (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Palier created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Palier créé avec succès\");",
+                                    "    pm.environment.set(\"palierId\", jsonData.palier.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir tous les Paliers",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/paliers",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "paliers"
+                            ]
+                        },
+                        "description": "Récupère la liste de tous les paliers."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Palier par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/paliers/{{palierId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "paliers",
+                                "{{palierId}}"
+                            ]
+                        },
+                        "description": "Récupère un palier spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Palier",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nom\": \"Palier Mis à Jour\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/paliers/{{palierId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "paliers",
+                                "{{palierId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'un palier (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Palier updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Palier mis à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Palier",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/paliers/{{palierId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "paliers",
+                                "{{palierId}}"
+                            ]
+                        },
+                        "description": "Supprime un palier par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Palier deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Palier supprimé avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Récompenses",
+            "item": [
+                {
+                    "name": "Créer Récompense",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"id\": \"recompense_test_1\",\n    \"type\": \"Badge\",\n    \"description\": \"Récompense Test\",\n    \"dateAttribution\": \"2024-01-15T10:00:00Z\",\n    \"palierId\": \"{{palierId}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/recompenses",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recompenses"
+                            ]
+                        },
+                        "description": "Crée une nouvelle récompense (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 201\", function () {",
+                                    "    pm.response.to.have.status(201);",
+                                    "});",
+                                    "pm.test(\"Recompense created successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Récompense créée avec succès\");",
+                                    "    pm.environment.set(\"recompenseId\", jsonData.recompense.id);",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir toutes les Récompenses",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/recompenses",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recompenses"
+                            ]
+                        },
+                        "description": "Récupère la liste de toutes les récompenses."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an array\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('array');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Obtenir Récompense par ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/recompenses/{{recompenseId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recompenses",
+                                "{{recompenseId}}"
+                            ]
+                        },
+                        "description": "Récupère une récompense spécifique par son ID."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Response is an object\", function () {",
+                                    "    pm.expect(pm.response.json()).to.be.an('object');",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Mettre à jour Récompense",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"description\": \"Récompense Mise à Jour\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/recompenses/{{recompenseId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recompenses",
+                                "{{recompenseId}}"
+                            ]
+                        },
+                        "description": "Met à jour les informations d'une récompense (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Recompense updated successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Récompense mise à jour avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Supprimer Récompense",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{jwt_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/recompenses/{{recompenseId}}",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "recompenses",
+                                "{{recompenseId}}"
+                            ]
+                        },
+                        "description": "Supprime une récompense par son ID (nécessite un token JWT)."
+                    },
+                    "response": [],
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "type": "text/javascript",
+                                "exec": [
+                                    "pm.test(\"Status code is 200\", function () {",
+                                    "    pm.response.to.have.status(200);",
+                                    "});",
+                                    "pm.test(\"Recompense deleted successfully\", function () {",
+                                    "    var jsonData = pm.response.json();",
+                                    "    pm.expect(jsonData.message).to.eql(\"Récompense supprimée avec succès.\");",
+                                    "});"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:3000/api",
+            "type": "string"
+        },
+        {
+            "key": "jwt_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "userId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "challengeId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "critereId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "participantId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "gagnantId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "performanceId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "etoileId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "palierId",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "recompenseId",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
