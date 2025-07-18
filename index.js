@@ -4,6 +4,13 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Ajout du CORS pour autoriser le dashboard React
+const cors = require('cors');
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true
+}));
+
 // Middleware pour parser le JSON
 app.use(express.json());
 
