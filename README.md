@@ -61,7 +61,7 @@ For detailed API documentation, please refer to the [API Guide](./API_GUIDE.md).
 ### Available Endpoints
 
 - `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - User login
+- `POST /api/utilisateurs/login` - User login
 - `GET /api/challenges` - List all challenges
 - `POST /api/challenges` - Create a new challenge
 - `GET /api/participants` - List all participants

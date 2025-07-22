@@ -82,16 +82,60 @@ class Utilisateur {
      */
     static update(id, updates) {
         return new Promise((resolve, reject) => {
-            const fields = Object.keys(updates).map(key => `${key} = ?`).join(', ');
-            const values = Object.values(updates);
-            const sql = `UPDATE Utilisateur SET ${fields} WHERE id = ?`;
-            db.run(sql, [...values, id], function (err) {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
+            try {
+                // Vérifier que des champs sont fournis
+                if (!updates || Object.keys(updates).length === 0) {
+                    console.error('Aucune mise à jour fournie pour l\'utilisateur', id);
+                    return reject(new Error('Aucune mise à jour fournie'));
                 }
-            });
+
+                // Vérifier que l'ID est valide
+                if (!id) {
+                    console.error('ID utilisateur manquant pour la mise à jour');
+                    return reject(new Error('ID utilisateur manquant'));
+                }
+
+                // Préparer la requête SQL
+                const fields = Object.keys(updates)
+                    .filter(key => key !== 'id') // Exclure l'ID des champs à mettre à jour
+                    .map(key => `${key} = ?`)
+                    .join(', ');
+                
+                if (!fields) {
+                    console.error('Aucun champ valide à mettre à jour pour l\'utilisateur', id);
+                    return reject(new Error('Aucun champ valide à mettre à jour'));
+                }
+
+                const values = Object.entries(updates)
+                    .filter(([key]) => key !== 'id')
+                    .map(([_, value]) => value);
+
+                const sql = `UPDATE Utilisateur SET ${fields} WHERE id = ?`;
+                console.log('Exécution de la requête SQL:', sql);
+                console.log('Valeurs:', [...values, id]);
+
+                db.run(sql, [...values, id], function (err) {
+                    if (err) {
+                        console.error('Erreur lors de l\'exécution de la requête SQL:', {
+                            sql,
+                            params: [...values, id],
+                            error: err.message
+                        });
+                        return reject(err);
+                    }
+                    
+                    if (this.changes === 0) {
+                        console.warn('Aucun utilisateur mis à jour avec l\'ID:', id);
+                        return reject(new Error('Utilisateur non trouvé'));
+                    }
+                    
+                    console.log(`Utilisateur ${id} mis à jour avec succès. ${this.changes} ligne(s) affectée(s).`);
+                    resolve();
+                });
+            } catch (error) {
+                console.error('Erreur inattendue dans Utilisateur.update:', error);
+                reject(error);
+            }
         });
     }
 
@@ -102,13 +146,27 @@ class Utilisateur {
      */
     static delete(id) {
         return new Promise((resolve, reject) => {
+            if (!id) {
+                console.error('Tentative de suppression sans ID utilisateur');
+                return reject(new Error('ID utilisateur manquant'));
+            }
+
             const sql = 'DELETE FROM Utilisateur WHERE id = ?';
+            console.log(`Exécution de la requête de suppression pour l'utilisateur: ${id}`);
+            
             db.run(sql, [id], function (err) {
                 if (err) {
-                    reject(err);
-                } else {
-                    resolve();
+                    console.error(`Erreur lors de la suppression de l'utilisateur ${id}:`, err.message);
+                    return reject(err);
                 }
+                
+                if (this.changes === 0) {
+                    console.warn(`Aucun utilisateur trouvé avec l'ID: ${id} pour suppression`);
+                    return reject(new Error('Utilisateur non trouvé'));
+                }
+                
+                console.log(`Utilisateur ${id} supprimé avec succès. ${this.changes} ligne(s) affectée(s).`);
+                resolve();
             });
         });
     }
