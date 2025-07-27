@@ -1,5 +1,5 @@
 -- USERS
-CREATE TABLE Utilisateur (
+CREATE TABLE IF NOT EXISTS Utilisateur (
     id TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE Utilisateur (
 );
 
 -- CHALLENGES
-CREATE TABLE Challenge (
+CREATE TABLE IF NOT EXISTS Challenge (
     id TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     dateDebut DATE NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE Challenge (
 );
 
 -- CRITERES
-CREATE TABLE Critere (
+CREATE TABLE IF NOT EXISTS Critere (
     id TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     poids REAL NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE Critere (
 );
 
 -- PARTICIPANTS
-CREATE TABLE Participant (
+CREATE TABLE IF NOT EXISTS Participant (
     id TEXT PRIMARY KEY,
     utilisateurId TEXT NOT NULL,
     challengeId TEXT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE Participant (
 );
 
 -- GAGNANTS (WINNERS)
-CREATE TABLE Gagnant (
+CREATE TABLE IF NOT EXISTS Gagnant (
     id TEXT PRIMARY KEY,
     utilisateurId TEXT NOT NULL,
     challengeId TEXT NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE Gagnant (
 );
 
 -- PERFORMANCES
-CREATE TABLE Performance (
+CREATE TABLE IF NOT EXISTS Performance (
     id TEXT PRIMARY KEY,
     participantId TEXT NOT NULL,
     valeur REAL NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE Performance (
 );
 
 -- ETOILES (STARS)
-CREATE TABLE Etoile (
+CREATE TABLE IF NOT EXISTS Etoile (
     id TEXT PRIMARY KEY,
     total INTEGER NOT NULL,
     dateAttribution DATE NOT NULL,
@@ -68,7 +68,7 @@ CREATE TABLE Etoile (
 );
 
 -- PALIERS (LEVELS)
-CREATE TABLE Palier (
+CREATE TABLE IF NOT EXISTS Palier (
     id TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     etoilesMin INTEGER NOT NULL,
@@ -76,11 +76,24 @@ CREATE TABLE Palier (
 );
 
 -- RECOMPENSES (REWARDS)
-CREATE TABLE Recompense (
+CREATE TABLE IF NOT EXISTS Recompense (
     id TEXT PRIMARY KEY,
     type TEXT NOT NULL,
     description TEXT,
     dateAttribution DATE,
     palierId TEXT,
     FOREIGN KEY (palierId) REFERENCES Palier(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS logs (
+  id INT AUTO_INCREMENT PRIMARY KEY, 
+  action VARCHAR(20) NOT NULL,       
+  target VARCHAR(50) NOT NULL,       
+  target_id VARCHAR(50) NOT NULL,    
+  user_id INT,                       
+  description TEXT,       
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,           
+  FOREIGN KEY (user_id) REFERENCES Utilisateur(id)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
 );
