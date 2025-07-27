@@ -27,6 +27,7 @@ const performanceRoutes = require('./routes/performanceRoutes');
 const etoileRoutes = require('./routes/etoileRoutes');
 const palierRoutes = require('./routes/palierRoutes');
 const recompenseRoutes = require('./routes/recompenseRoutes');
+const statisticsRoutes = require('./routes/statisticsRoutes');
 
 app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/challenges', challengeRoutes);
@@ -37,6 +38,7 @@ app.use('/api/performances', performanceRoutes);
 app.use('/api/etoiles', etoileRoutes);
 app.use('/api/paliers', palierRoutes);
 app.use('/api/recompenses', recompenseRoutes);
+app.use('/api/stats', statisticsRoutes);
 
 // Utilisation du middleware de gestion des erreurs
 app.use(errorMiddleware);

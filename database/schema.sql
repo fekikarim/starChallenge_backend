@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS Utilisateur (
     nom TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
     motDePasseHash TEXT NOT NULL,
-    role TEXT NOT NULL
+    role TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CHALLENGES
@@ -15,6 +16,7 @@ CREATE TABLE IF NOT EXISTS Challenge (
     dateFin DATE NOT NULL,
     statut TEXT NOT NULL,
     createurId TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (createurId) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
@@ -24,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Critere (
     nom TEXT NOT NULL,
     poids REAL NOT NULL,
     challengeId TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (challengeId) REFERENCES Challenge(id) ON DELETE CASCADE
 );
 
@@ -33,6 +36,7 @@ CREATE TABLE IF NOT EXISTS Participant (
     utilisateurId TEXT NOT NULL,
     challengeId TEXT NOT NULL,
     scoreTotal REAL DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE,
     FOREIGN KEY (challengeId) REFERENCES Challenge(id) ON DELETE CASCADE
 );
@@ -43,6 +47,7 @@ CREATE TABLE IF NOT EXISTS Gagnant (
     utilisateurId TEXT NOT NULL,
     challengeId TEXT NOT NULL,
     classement INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE,
     FOREIGN KEY (challengeId) REFERENCES Challenge(id) ON DELETE CASCADE
 );
@@ -54,6 +59,7 @@ CREATE TABLE IF NOT EXISTS Performance (
     valeur REAL NOT NULL,
     rang INTEGER NOT NULL,
     details TEXT, -- JSON stored as TEXT
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (participantId) REFERENCES Participant(id) ON DELETE CASCADE
 );
 
@@ -63,7 +69,8 @@ CREATE TABLE IF NOT EXISTS Etoile (
     total INTEGER NOT NULL,
     dateAttribution DATE NOT NULL,
     raison TEXT,
-    utilisateurId TEXT NOT NULL,
+        utilisateurId TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE
 );
 
@@ -72,7 +79,8 @@ CREATE TABLE IF NOT EXISTS Palier (
     id TEXT PRIMARY KEY,
     nom TEXT NOT NULL,
     etoilesMin INTEGER NOT NULL,
-    description TEXT
+    description TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- RECOMPENSES (REWARDS)
@@ -82,6 +90,7 @@ CREATE TABLE IF NOT EXISTS Recompense (
     description TEXT,
     dateAttribution DATE,
     palierId TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (palierId) REFERENCES Palier(id) ON DELETE SET NULL
 );
 
