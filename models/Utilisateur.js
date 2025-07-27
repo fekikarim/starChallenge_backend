@@ -170,6 +170,45 @@ class Utilisateur {
             });
         });
     }
+
+    /**
+     * Vérifie si un email existe déjà dans la base de données (insensible à la casse).
+     * @param {string} email - L'email à vérifier.
+     * @param {string} [excludeUserId=null] - ID d'utilisateur à exclure de la vérification (utile pour la mise à jour).
+     * @returns {Promise<{exists: boolean, user: Object|null}>} - Un objet indiquant si l'email existe et l'utilisateur associé s'il existe.
+     */
+    static async checkEmailExists(email, excludeUserId = null) {
+        return new Promise((resolve, reject) => {
+            try {
+                if (!email) {
+                    return resolve({ exists: false, user: null });
+                }
+
+                let sql = 'SELECT * FROM Utilisateur WHERE LOWER(email) = LOWER(?)';
+                const params = [email];
+
+                if (excludeUserId) {
+                    sql += ' AND id != ?';
+                    params.push(excludeUserId);
+                }
+
+                db.get(sql, params, (err, row) => {
+                    if (err) {
+                        console.error('Erreur lors de la vérification de l\'email:', err);
+                        return reject(err);
+                    }
+                    
+                    resolve({
+                        exists: !!row,
+                        user: row ? new Utilisateur(row.id, row.nom, row.email, row.motDePasseHash, row.role) : null
+                    });
+                });
+            } catch (error) {
+                console.error('Erreur inattendue dans checkEmailExists:', error);
+                reject(error);
+            }
+        });
+    }
 }
 
 module.exports = Utilisateur;

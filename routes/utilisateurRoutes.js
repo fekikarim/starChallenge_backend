@@ -5,6 +5,23 @@ const { body } = require('express-validator');
 const auth = require('../middleware/authMiddleware');
 
 /**
+ * @route   GET /api/utilisateurs/check-email
+ * @desc    Vérifier si un email est déjà utilisé
+ * @access  Public
+ * @query   {string} email - L'email à vérifier
+ * @query   {string} [excludeId] - ID d'utilisateur à exclure (pour la mise à jour)
+ */
+router.get('/check-email', UtilisateurController.checkEmail);
+
+/**
+ * @route   GET /api/utilisateurs/:id/check-email
+ * @desc    Vérifier si un email est déjà utilisé (version avec ID d'exclusion)
+ * @access  Public
+ * @query   {string} email - L'email à vérifier
+ */
+router.get('/:id/check-email', UtilisateurController.checkEmail);
+
+/**
  * @route   POST /api/utilisateurs/login
  * @desc    Connecter un utilisateur
  * @access  Public

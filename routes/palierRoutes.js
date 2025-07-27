@@ -8,12 +8,16 @@ router.post('/', auth, [
     body('id').notEmpty(),
     body('nom').notEmpty(),
     body('etoilesMin').isInt({ gt: 0 }),
-    body('description').notEmpty()
+    body('description').optional()
 ], PalierController.create);
 
 router.get('/', PalierController.getAll);
 router.get('/:id', PalierController.getById);
-router.put('/:id', auth, PalierController.update);
+router.put('/:id', auth, [
+    body('nom').notEmpty(),
+    body('etoilesMin').isInt({ gt: 0 }),
+    body('description').optional()
+], PalierController.update);
 router.delete('/:id', auth, PalierController.delete);
 
 module.exports = router;
