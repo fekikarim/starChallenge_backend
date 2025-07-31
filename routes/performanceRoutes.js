@@ -9,12 +9,19 @@ router.post('/', auth, [
     body('participantId').notEmpty(),
     body('valeur').isFloat(),
     body('rang').isInt(),
-    body('details').isJSON()
+    body('details').optional().isString(),
+    body('critereId').optional().isString()
 ], PerformanceController.create);
 
 router.get('/', PerformanceController.getAll);
 router.get('/:id', PerformanceController.getById);
-router.put('/:id', auth, PerformanceController.update);
+router.put('/:id', auth, [
+    body('participantId').optional().notEmpty(),
+    body('valeur').optional().isFloat(),
+    body('rang').optional().isInt(),
+    body('details').optional().isString(),
+    body('critereId').optional().isString()
+], PerformanceController.update);
 router.delete('/:id', auth, PerformanceController.delete);
 
 module.exports = router;

@@ -8,7 +8,8 @@ router.post('/', auth, [
     body('id').notEmpty(),
     body('nom').notEmpty(),
     body('poids').isFloat({ gt: 0 }),
-    body('challengeId').notEmpty()
+    body('challengeId').notEmpty(),
+    body('type').optional().isString()
 ], CritereController.create);
 
 router.get('/', CritereController.getAll);

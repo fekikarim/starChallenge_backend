@@ -7,9 +7,9 @@ class PerformanceController {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { id, participantId, valeur, rang, details } = req.body;
+        const { id, participantId, valeur, rang, details, critereId } = req.body;
         try {
-            const nouvellePerformance = new Performance(id, participantId, valeur, rang, details);
+            const nouvellePerformance = new Performance(id, participantId, valeur, rang, details, critereId);
             await Performance.add(nouvellePerformance);
             res.status(201).json({ message: 'Performance créée avec succès', performance: nouvellePerformance });
         } catch (error) {

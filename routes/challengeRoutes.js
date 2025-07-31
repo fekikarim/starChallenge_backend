@@ -26,6 +26,15 @@ router.post('/', auth, [
 router.get('/', ChallengeController.getAll);
 
 /**
+ * @route   GET /api/challenges/app/list
+ * @desc    Récupérer les challenges avec détails pour l'application mobile
+ * @access  Public
+ * @query   {string} status - Filtrer par statut (en_attente, en_cours, termine)
+ * @query   {string} userId - ID de l'utilisateur pour vérifier la participation
+ */
+router.get('/app/list', ChallengeController.getChallengesForApp);
+
+/**
  * @route   GET /api/challenges/:id
  * @desc    Récupérer un challenge par ID
  * @access  Public

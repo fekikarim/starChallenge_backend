@@ -8,7 +8,8 @@ router.post('/', auth, [
     body('id').notEmpty(),
     body('utilisateurId').notEmpty(),
     body('challengeId').notEmpty(),
-    body('scoreTotal').isFloat()
+    body('scoreTotal').isFloat(),
+    body('isValidated').optional().isString()
 ], ParticipantController.create);
 
 router.get('/', ParticipantController.getAll);

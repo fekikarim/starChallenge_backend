@@ -7,9 +7,9 @@ class CritereController {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { id, nom, poids, challengeId } = req.body;
+        const { id, nom, poids, challengeId, type } = req.body;
         try {
-            const nouveauCritere = new Critere(id, nom, poids, challengeId);
+            const nouveauCritere = new Critere(id, nom, poids, challengeId, type);
             await Critere.add(nouveauCritere);
             res.status(201).json({ message: 'Critère créé avec succès', critere: nouveauCritere });
         } catch (error) {

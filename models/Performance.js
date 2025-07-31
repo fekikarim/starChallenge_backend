@@ -12,13 +12,15 @@ class Performance {
      * @param {number} valeur - La valeur de la performance.
      * @param {number} rang - Le rang de la performance.
      * @param {string} details - Les détails de la performance (JSON).
+     * @param {string} critereId - L'ID du critère associé à cette performance.
      */
-    constructor(id, participantId, valeur, rang, details) {
+    constructor(id, participantId, valeur, rang, details, critereId) {
         this.id = id;
         this.participantId = participantId;
         this.valeur = valeur;
         this.rang = rang;
         this.details = details;
+        this.critereId = critereId;
     }
 
     /**
@@ -28,8 +30,8 @@ class Performance {
      */
     static add(performance) {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO Performance (id, participantId, valeur, rang, details) VALUES (?, ?, ?, ?, ?)';
-            db.run(sql, [performance.id, performance.participantId, performance.valeur, performance.rang, performance.details], function (err) {
+            const sql = 'INSERT INTO Performance (id, participantId, valeur, rang, details, critereId) VALUES (?, ?, ?, ?, ?, ?)';
+            db.run(sql, [performance.id, performance.participantId, performance.valeur, performance.rang, performance.details, performance.critereId], function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -50,7 +52,7 @@ class Performance {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(rows.map(row => new Performance(row.id, row.participantId, row.valeur, row.rang, row.details)));
+                    resolve(rows.map(row => new Performance(row.id, row.participantId, row.valeur, row.rang, row.details, row.critereId)));
                 }
             });
         });
@@ -68,7 +70,7 @@ class Performance {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(row ? new Performance(row.id, row.participantId, row.valeur, row.rang, row.details) : null);
+                    resolve(row ? new Performance(row.id, row.participantId, row.valeur, row.rang, row.details, row.critereId) : null);
                 }
             });
         });

@@ -11,12 +11,14 @@ class Participant {
      * @param {string} utilisateurId - L'ID de l'utilisateur participant.
      * @param {string} challengeId - L'ID du challenge auquel l'utilisateur participe.
      * @param {number} scoreTotal - Le score total du participant.
+     * @param {string} isValidated - Le statut de validation du participant.
      */
-    constructor(id, utilisateurId, challengeId, scoreTotal) {
+    constructor(id, utilisateurId, challengeId, scoreTotal, isValidated) {
         this.id = id;
         this.utilisateurId = utilisateurId;
         this.challengeId = challengeId;
         this.scoreTotal = scoreTotal;
+        this.isValidated = isValidated;
     }
 
     /**
@@ -26,8 +28,8 @@ class Participant {
      */
     static add(participant) {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO Participant (id, utilisateurId, challengeId, scoreTotal) VALUES (?, ?, ?, ?)';
-            db.run(sql, [participant.id, participant.utilisateurId, participant.challengeId, participant.scoreTotal], function (err) {
+            const sql = 'INSERT INTO Participant (id, utilisateurId, challengeId, scoreTotal, isValidated) VALUES (?, ?, ?, ?, ?)';
+            db.run(sql, [participant.id, participant.utilisateurId, participant.challengeId, participant.scoreTotal, participant.isValidated], function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -48,7 +50,7 @@ class Participant {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(rows.map(row => new Participant(row.id, row.utilisateurId, row.challengeId, row.scoreTotal)));
+                    resolve(rows.map(row => new Participant(row.id, row.utilisateurId, row.challengeId, row.scoreTotal, row.isValidated)));
                 }
             });
         });
@@ -66,7 +68,7 @@ class Participant {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(row ? new Participant(row.id, row.utilisateurId, row.challengeId, row.scoreTotal) : null);
+                    resolve(row ? new Participant(row.id, row.utilisateurId, row.challengeId, row.scoreTotal, row.isValidated) : null);
                 }
             });
         });

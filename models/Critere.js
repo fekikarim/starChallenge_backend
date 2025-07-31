@@ -11,12 +11,14 @@ class Critere {
      * @param {string} nom - Le nom du critère.
      * @param {number} poids - Le poids du critère dans le calcul du score.
      * @param {string} challengeId - L'ID du challenge auquel ce critère est associé.
+     * @param {string} type - Le type du critère (quantitatif, qualitatif, etc.).
      */
-    constructor(id, nom, poids, challengeId) {
+    constructor(id, nom, poids, challengeId, type) {
         this.id = id;
         this.nom = nom;
         this.poids = poids;
         this.challengeId = challengeId;
+        this.type = type;
     }
 
     /**
@@ -26,8 +28,8 @@ class Critere {
      */
     static add(critere) {
         return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO Critere (id, nom, poids, challengeId) VALUES (?, ?, ?, ?)';
-            db.run(sql, [critere.id, critere.nom, critere.poids, critere.challengeId], function (err) {
+            const sql = 'INSERT INTO Critere (id, nom, poids, challengeId, type) VALUES (?, ?, ?, ?, ?)';
+            db.run(sql, [critere.id, critere.nom, critere.poids, critere.challengeId, critere.type], function (err) {
                 if (err) {
                     reject(err);
                 } else {
@@ -48,7 +50,7 @@ class Critere {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(rows.map(row => new Critere(row.id, row.nom, row.poids, row.challengeId)));
+                    resolve(rows.map(row => new Critere(row.id, row.nom, row.poids, row.challengeId, row.type)));
                 }
             });
         });
@@ -66,7 +68,7 @@ class Critere {
                 if (err) {
                     reject(err);
                 } else {
-                    resolve(row ? new Critere(row.id, row.nom, row.poids, row.challengeId) : null);
+                    resolve(row ? new Critere(row.id, row.nom, row.poids, row.challengeId, row.type) : null);
                 }
             });
         });

@@ -7,9 +7,9 @@ class ParticipantController {
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const { id, utilisateurId, challengeId, scoreTotal } = req.body;
+        const { id, utilisateurId, challengeId, scoreTotal, isValidated } = req.body;
         try {
-            const nouveauParticipant = new Participant(id, utilisateurId, challengeId, scoreTotal);
+            const nouveauParticipant = new Participant(id, utilisateurId, challengeId, scoreTotal, isValidated);
             await Participant.add(nouveauParticipant);
             res.status(201).json({ message: 'Participant créé avec succès', participant: nouveauParticipant });
         } catch (error) {

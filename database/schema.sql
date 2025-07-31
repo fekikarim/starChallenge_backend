@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS Critere (
     nom TEXT NOT NULL,
     poids REAL NOT NULL,
     challengeId TEXT NOT NULL,
+    type TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (challengeId) REFERENCES Challenge(id) ON DELETE CASCADE
 );
@@ -36,6 +37,7 @@ CREATE TABLE IF NOT EXISTS Participant (
     utilisateurId TEXT NOT NULL,
     challengeId TEXT NOT NULL,
     scoreTotal REAL DEFAULT 0,
+    isValidated TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (utilisateurId) REFERENCES Utilisateur(id) ON DELETE CASCADE,
     FOREIGN KEY (challengeId) REFERENCES Challenge(id) ON DELETE CASCADE
@@ -58,8 +60,10 @@ CREATE TABLE IF NOT EXISTS Performance (
     participantId TEXT NOT NULL,
     valeur REAL NOT NULL,
     rang INTEGER NOT NULL,
-    details TEXT, -- JSON stored as TEXT
+    details TEXT,
+    critereId TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (critereId) REFERENCES Critere(id) ON DELETE CASCADE,
     FOREIGN KEY (participantId) REFERENCES Participant(id) ON DELETE CASCADE
 );
 
@@ -99,7 +103,7 @@ CREATE TABLE IF NOT EXISTS logs (
   action VARCHAR(20) NOT NULL,       
   target VARCHAR(50) NOT NULL,       
   target_id VARCHAR(50) NOT NULL,    
-  user_id INT,                       
+  user_id TEXT,                       
   description TEXT,       
   timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,           
   FOREIGN KEY (user_id) REFERENCES Utilisateur(id)
