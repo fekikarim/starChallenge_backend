@@ -1,14 +1,22 @@
 require('dotenv').config(); // Charge les variables d'environnement du fichier .env
 
 const express = require('express');
+const http = require('http');
 const app = express();
+const server = http.createServer(app);
 const port = process.env.PORT || 3000;
 
-// Ajout du CORS pour autoriser le dashboard React
+// Initialiser Socket.IO
+const socketService = require('./services/socketService');
+socketService.initialize(server);
+
+// Ajout du CORS pour autoriser le dashboard React et l'application Flutter
 const cors = require('cors');
 app.use(cors({
-  origin: 'http://localhost:3001',
-  credentials: true
+  origin: "*", // Permettre toutes les origines pour le développement
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"]
 }));
 
 // Middleware pour parser le JSON
@@ -30,6 +38,7 @@ const recompenseRoutes = require('./routes/recompenseRoutes');
 const statisticsRoutes = require('./routes/statisticsRoutes');
 const userStatsRoutes = require('./routes/userStatsRoutes');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
+const classementRoutes = require('./routes/classementRoutes');
 
 app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/challenges', challengeRoutes);
@@ -43,14 +52,16 @@ app.use('/api/recompenses', recompenseRoutes);
 app.use('/api/stats', statisticsRoutes);
 app.use('/api/user-stats', userStatsRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/classement', classementRoutes);
 
 // Utilisation du middleware de gestion des erreurs
 app.use(errorMiddleware);
 
 // Démarrage du serveur
 if (require.main === module) {
-    app.listen(port, () => {
+    server.listen(port, () => {
         console.log(`Serveur démarré sur http://localhost:${port}`);
+        console.log(`Socket.IO activé pour les mises à jour en temps réel`);
     });
 }
 

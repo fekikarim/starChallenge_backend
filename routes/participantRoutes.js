@@ -13,6 +13,9 @@ router.post('/', auth, [
 ], ParticipantController.create);
 
 router.get('/', ParticipantController.getAll);
+router.get('/global-leaderboard', ParticipantController.getGlobalLeaderboard);
+router.get('/user/:userId', ParticipantController.getByUser);
+router.get('/user/:userId/status/:status', ParticipantController.getByUserAndStatus);
 router.get('/:id', ParticipantController.getById);
 router.put('/:id', auth, ParticipantController.update);
 router.delete('/:id', auth, ParticipantController.delete);

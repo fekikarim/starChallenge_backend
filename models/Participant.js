@@ -96,6 +96,43 @@ class Participant {
     }
 
     /**
+     * Récupère tous les participants d'un utilisateur.
+     * @param {string} userId - L'ID de l'utilisateur.
+     * @returns {Promise<Participant[]>} - La liste des participants.
+     */
+    static getByUser(userId) {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM Participant WHERE utilisateurId = ?';
+            db.all(sql, [userId], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    /**
+     * Récupère tous les participants d'un utilisateur avec un statut spécifique.
+     * @param {string} userId - L'ID de l'utilisateur.
+     * @param {string} status - Le statut de validation.
+     * @returns {Promise<Participant[]>} - La liste des participants.
+     */
+    static getByUserAndStatus(userId, status) {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM Participant WHERE utilisateurId = ? AND isValidated = ?';
+            db.all(sql, [userId, status], (err, rows) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(rows);
+                }
+            });
+        });
+    }
+
+    /**
      * Supprime un participant.
      * @param {string} id - L'ID du participant à supprimer.
      * @returns {Promise<void>}

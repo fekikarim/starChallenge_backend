@@ -38,11 +38,35 @@ class ParticipantService {
             });
 
             let scoreTotal = 0;
+            // Créer un map des critères pour une recherche plus rapide
+            const critereMap = new Map(criteres.map(c => [c.id, c]));
+            const missingCriteres = new Set();
+
             for (const perf of performances) {
-                const critere = criteres.find(c => c.id === perf.details.critereId); // Supposant que details contient critereId
-                if (critere) {
-                    scoreTotal += perf.valeur * critere.poids;
+                // Utiliser le champ critereId direct ou essayer de le parser depuis details
+                let critereId = perf.critereId;
+                if (!critereId && perf.details) {
+                    try {
+                        const parsedDetails = JSON.parse(perf.details);
+                        critereId = parsedDetails.critereId;
+                    } catch (e) {
+                        // Ignorer si details n'est pas du JSON valide
+                    }
                 }
+
+                const critere = critereMap.get(critereId);
+                if (critere) {
+                    const contribution = perf.valeur * critere.poids;
+                    scoreTotal += contribution;
+                    console.log(`[ParticipantService] Performance ${perf.id}: valeur=${perf.valeur}, poids=${critere.poids}, contribution=${contribution}`);
+                } else if (critereId && !missingCriteres.has(critereId)) {
+                    missingCriteres.add(critereId);
+                    console.warn(`[ParticipantService] Critère non trouvé pour l'ID: ${critereId}`);
+                }
+            }
+
+            if (missingCriteres.size > 0) {
+                console.warn(`[ParticipantService] ${missingCriteres.size} critères manquants détectés pour le participant ${participantId}`);
             }
 
             await Participant.update(participantId, { scoreTotal });

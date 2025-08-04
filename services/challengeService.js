@@ -11,19 +11,39 @@ class ChallengeService {
     /**
      * Calcule le classement des participants à un challenge en fonction de leur score.
      * @param {string} challengeId - L'ID du challenge.
-     * @returns {Promise<Participant[]>} - Une liste de participants classés.
+     * @returns {Promise<Object[]>} - Une liste de participants classés avec leurs informations utilisateur.
      */
     static async calculerClassement(challengeId) {
         try {
-            const participants = await new Promise((resolve, reject) => {
+            const classement = await new Promise((resolve, reject) => {
                 const db = new (require('sqlite3').verbose().Database)('./database/starchallenge.db');
-                db.all('SELECT * FROM Participant WHERE challengeId = ? ORDER BY scoreTotal DESC', [challengeId], (err, rows) => {
+                const sql = `
+                    SELECT
+                        U.nom,
+                        P.scoreTotal,
+                        P.id as participantId,
+                        P.utilisateurId,
+                        P.challengeId,
+                        P.isValidated,
+                        U.email,
+                        U.role,
+                        ROW_NUMBER() OVER (ORDER BY P.scoreTotal DESC) as rang
+                    FROM
+                        Participant P
+                    JOIN
+                        Utilisateur U ON U.id = P.utilisateurId
+                    WHERE
+                        P.challengeId = ?
+                    ORDER BY
+                        P.scoreTotal DESC
+                `;
+                db.all(sql, [challengeId], (err, rows) => {
                     if (err) reject(err);
                     resolve(rows);
                 });
                 db.close();
             });
-            return participants;
+            return classement;
         } catch (error) {
             console.error("Erreur lors du calcul du classement:", error);
             return [];
