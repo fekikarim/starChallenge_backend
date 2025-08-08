@@ -1,133 +1,203 @@
-# STAR Challenge Backend
+<div align="center">
+
+# ⭐ STAR Challenge — Backend API
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+![Node.js](https://img.shields.io/badge/Node.js-16%2B-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-3-003B57?logo=sqlite&logoColor=white)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-010101?logo=socketdotio&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-black)
 
-A robust backend system for STAR Challenge, designed to manage and track corporate performance challenges. This Node.js application provides secure APIs for handling users, challenges, performance criteria, participants, winners, rewards, and progress tracking.
+<sub>Plateforme API sécurisée pour piloter des défis de performance, la gamification et l’analytics en entreprise.</sub>
 
-## 🌟 Features
+</div>
 
-- **User Management**: Secure authentication and authorization with JWT
-- **Challenge Management**: Create, update, and track performance challenges
-- **Real-time Tracking**: Monitor participant progress in real-time
-- **Reward System**: Manage and distribute rewards for achievements
-- **Analytics Dashboard**: Comprehensive performance metrics and reporting
-- **RESTful API**: Well-documented endpoints for easy integration
-- **Scalable Architecture**: Built with performance and scalability in mind
+## 🚀 À propos
 
-## 🚀 Quick Start
+Backend Node.js/Express modulaire et robuste pour STAR Challenge. Il expose des API REST sécurisées, des mises à jour temps réel via Socket.IO, un calcul de classements/étoiles, et une couche analytics pour alimenter un dashboard administrateur et une application mobile.
 
-### Prerequisites
+Mots-clés: REST API, Node.js, Express 5, SQLite, JWT, Socket.IO, leaderboard, gamification, analytics, monitoring, logging, CORS, express-validator, bcrypt.
 
-- Node.js 16.x or higher
-- npm 8.x or higher
-- SQLite (for development)
+## 🧭 Sommaire
 
-### Installation
+- Fonctionnalités clés
+- Architecture & stack
+- Démarrage rapide
+- Configuration (.env)
+- Base de données & initialisation
+- Endpoints principaux
+- Temps réel (Socket.IO)
+- Sécurité & conformité
+- Journalisation (logs)
+- Scripts npm
+- Contribution & licence
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/fekikarim/starChallenge_backend.git
-   cd starChallenge_backend
-   ```
+## 🌟 Fonctionnalités clés
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+- 🔐 Authentification JWT, rôles et protection des routes.
+- 🏆 Gestion des challenges, critères, participants, performances, gagnants, paliers et récompenses.
+- 📊 Analytics administrateur (aperçu, challenges, performances, récompenses).
+- ⚡ Temps réel: actualisation des classements et statistiques avec Socket.IO (rooms par challenge).
+- ✅ Validation des entrées (express-validator) et gestion d’erreurs centralisée.
+- 🧱 Persistance SQLite, requêtes optimisées et schéma relationnel clair.
+- 📈 Journalisation structurée via Winston (fichiers combined/error).
 
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+## 🧱 Architecture & stack
 
-4. Initialize the database:
-   ```bash
-   npm run init-db
-   ```
+```mermaid
+flowchart LR
+   subgraph Clients
+      A[Mobile App] -->|REST/Socket| S
+      B[Admin Dashboard] -->|REST/Socket| S
+   end
 
-5. Start the development server:
-   ```bash
-   npm start
-   ```
-
-The API will be available at `http://localhost:3000`
-
-## 📚 API Documentation
-
-For detailed API documentation, please refer to the [API Guide](./API_GUIDE.md).
-
-### Available Endpoints
-
-- `POST /api/auth/register` - Register a new user
-- `POST /api/utilisateurs/login` - User login
-- `GET /api/challenges` - List all challenges
-- `POST /api/challenges` - Create a new challenge
-- `GET /api/participants` - List all participants
-- `POST /api/rewards` - Create a new reward
-- `GET /api/analytics` - Get performance analytics
-
-## 🛠 Development
-
-### Project Structure
-
-```
-├── config/           # Configuration files
-├── controllers/      # Request handlers
-├── database/         # Database initialization and migrations
-├── middleware/       # Custom middleware
-├── models/           # Database models
-├── routes/           # API route definitions
-├── services/         # Business logic
-└── tests/            # Test files
+   S[Express 5 API] --> M[Middleware JWT/CORS/Validation]
+   S --> C[Controllers]
+   C --> SV[Services]
+   SV --> DB[(SQLite 3)]
+   S <--> IO[Socket.IO]
 ```
 
-### Testing
+Pile technique: Node.js 16+, Express 5, SQLite3, Socket.IO 4, JWT, bcrypt, express-validator, Winston.
 
-Run the test suite:
+Structure du projet:
+
+```
+config/        # DB & JWT
+controllers/   # Contrôleurs REST + error handler
+database/      # Schema + init script
+middleware/    # Auth JWT, etc.
+models/        # Accès SQLite par entité
+routes/        # Définition des endpoints
+services/      # Business logic (score, classement, récompenses)
+utils/         # Logger Winston
+```
+
+## ⚙️ Démarrage rapide
+
+Prérequis: Node.js 16+, npm 8+, SQLite3 installé.
+
+1) Installer les dépendances
 
 ```bash
-npm test
+npm install
 ```
 
-### Linting
+2) Configuration environnement
 
 ```bash
-npm run lint
+cp .env.example .env
+# Éditer .env et renseigner vos valeurs
 ```
 
-## 🔒 Security
+3) Initialiser la base de données
 
-- JWT-based authentication
-- Password hashing with bcrypt
-- Input validation with express-validator
-- Environment-based configuration
-- Security headers and CORS protection
+```bash
+npm run init-db
+```
 
-## 🤝 Contributing
+4) Lancer le serveur
 
-Contributions are welcome! Please follow these steps:
+```bash
+npm start
+```
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+API disponible sur http://localhost:3000
 
-## 📄 License
+## � Configuration (.env)
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
+Variables supportées:
 
-## 👏 Acknowledgments
+- PORT (optionnel, défaut: 3000)
+- JWT_SECRET (requis)
+- NODE_ENV (development | production)
 
-- Built with ❤️ by [Karim Feki](https://github.com/fekikarim) and [Nesrine Derouiche](https://github.com/nesrine77)
-- Contact: 
-  - Karim Feki: [GitHub](https://github.com/fekikarim) | [Email](mailto:feki.karim28@gmail.com) | [LinkedIn](https://www.linkedin.com/in/karimfeki/)
-  - Nesrine Derouiche: [GitHub](https://github.com/nesrine77) | [Email](mailto:nesrine.derouiche15@gmail.com) | [LinkedIn](https://www.linkedin.com/in/nesrine-derouiche/)
+Voir `.env.example` pour un modèle prêt à l’emploi.
 
----
+## 🗄️ Base de données & initialisation
+
+- SGBD: SQLite (`database/starchallenge.db`)
+- Schéma: voir `database/schema.sql`
+- Initialisation: `npm run init-db` (exécute `database/init-db.js`)
+
+Tables principales: Utilisateur, Challenge, Critere, Participant, Performance, Gagnant, Etoile, Palier, Recompense.
+
+## 🔌 Endpoints principaux (aperçu)
+
+Consultez la documentation complète: `API_GUIDE.md`.
+
+- Authentification & Utilisateurs
+   - POST `/api/utilisateurs/login` — connexion et génération de JWT
+   - CRUD `/api/utilisateurs` (protégé)
+   - GET `/api/utilisateurs/check-email` — vérification de disponibilité email
+
+- Challenges & Classements
+   - GET `/api/challenges` — liste des challenges (incl. `/app/list` pour mobile)
+   - POST `/api/challenges` — création (protégé)
+   - GET `/api/challenges/:id/classement` — classement d’un challenge
+   - GET `/api/challenges/:id/gagnants` — détermination/récupération des gagnants
+
+- Participants & Performances
+   - CRUD `/api/participants` (+ `global-leaderboard`, `user/:userId`, `user/:userId/status/:status`)
+   - CRUD `/api/performances`
+
+- Étoiles, Paliers, Récompenses
+   - CRUD `/api/etoiles`, `/api/paliers`, `/api/recompenses`
+
+- Analytics & Leaderboard
+   - Admin-only: `/api/stats/overview`, `/api/stats/challenges`, `/api/stats/performances`, `/api/stats/recompenses`
+   - Leaderboard: `/api/leaderboard/global`, `/weekly`, `/monthly`, `/position/:userId`
+   - Temps réel: `/api/classement/:challengeId` et `/stats`
+
+## ⚡ Temps réel (Socket.IO)
+
+Événements émis/écoutés:
+
+- Client → serveur: `subscribe_challenge`, `unsubscribe_challenge`, `request_leaderboard`, `request_stats`, `ping`
+- Serveur → client: `leaderboard_update`, `stats_update`, `performance_change`, `pong`, `subscription_confirmed`
+
+Chaque challenge possède sa “room” (`challenge_{id}`) pour des diffusions ciblées.
+
+## �️ Sécurité & conformité
+
+- JWT (Authorization: Bearer <token>) via `middleware/authMiddleware.js`
+- Rôles (ex. admin) pour l’accès aux stats
+- Bcrypt pour le hachage des mots de passe
+- Validation systématique des payloads avec `express-validator`
+- CORS configuré pour les clients front (React/Flutter)
+
+## � Journalisation
+
+- Winston configuré en JSON avec timestamp
+- Fichiers: `logs/combined.log` et `logs/error.log`
+- En dev, sortie console colorisée
+
+## 📜 Scripts npm
+
+```json
+{
+   "init-db": "node database/init-db.js",
+   "start": "node index.js"
+}
+```
+
+## 🤝 Contribution
+
+Les contributions sont bienvenues. Ouvrez une issue, proposez une PR, pensez à des commits atomiques et testables.
+
+## 📄 Licence
+
+ISC. Voir [LICENSE](./LICENSE).
+
+## � Auteurs
+
+- Karim Feki — [GitHub](https://github.com/fekikarim) · [Email](mailto:feki.karim28@gmail.com) · [LinkedIn](https://www.linkedin.com/in/karimfeki/)
+- Nesrine Derouiche — [GitHub](https://github.com/nesrine77) · [Email](mailto:nesrine.derouiche15@gmail.com) · [LinkedIn](https://www.linkedin.com/in/nesrine-derouiche/)
+
+—
 
 <div align="center">
-  <sub>Made with ❤️ by <a href="https://github.com/fekikarim">Karim Feki</a></sub>
+   <sub>Fait avec ❤️ pour la performance d’équipe.</sub>
 </div>
