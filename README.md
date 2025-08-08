@@ -24,6 +24,7 @@ Mots-clés: REST API, Node.js, Express 5, SQLite, JWT, Socket.IO, leaderboard, g
 
 - Fonctionnalités clés
 - Architecture & stack
+- Dépôts liés
 - Démarrage rapide
 - Configuration (.env)
 - Base de données & initialisation
@@ -75,6 +76,11 @@ services/      # Business logic (score, classement, récompenses)
 utils/         # Logger Winston
 ```
 
+## 🔗 Dépôts liés
+
+- Admin Dashboard: [github.com/fekikarim/starChallenge_dashboard](https://github.com/fekikarim/starChallenge_dashboard)
+- Frontend mobile (Flutter): [github.com/fekikarim/star_frontend](https://github.com/fekikarim/star_frontend)
+
 ## ⚙️ Démarrage rapide
 
 Prérequis: Node.js 16+, npm 8+, SQLite3 installé.
@@ -104,7 +110,7 @@ npm run init-db
 npm start
 ```
 
-API disponible sur http://localhost:3000
+API disponible sur <http://localhost:3000>
 
 ## � Configuration (.env)
 
